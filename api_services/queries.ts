@@ -9,9 +9,10 @@ export const useEmployeeLists = () => {
 };
 
 
- export const useEmployeeDetails = () => {
+ export const useEmployeeDetails = (id:any) => {
    return useQuery({
-     queryKey: ["get-employee-details"],
-     queryFn: getEmployeeDetails,
+     queryKey: ["get-employee-details", {id}],
+     queryFn: () => getEmployeeDetails(id),
+     enabled: !!id,
    });
  };
