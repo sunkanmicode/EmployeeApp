@@ -1,10 +1,18 @@
-import { View, Text, TouchableOpacity, FlatList } from 'react-native'
-import React from 'react'
-import { Link } from 'expo-router';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
+import React, { useState } from "react";
+import { Link } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { useEmployeeLists } from '@/api_services/queries';
+import {  useEmployeeLists } from "@/api_services/queries";
 import Spinner from "react-native-loading-spinner-overlay";
-
+import { useDeleteEmployee } from "@/api_services/mutations";
+import Toast from "react-native-toast-message";
 
 interface Employee {
   id: number;
@@ -15,8 +23,12 @@ interface Employee {
 }
 
 const EmployeeListScreen = () => {
+
+  //useState
+  const [currentIndex, setCurrentIndex] = useState<number | null>();
   //Api useHook
   const employeeData = useEmployeeLists();
+  const deleteEmployee = useDeleteEmployee();
 
   // const employeeData: Employee[] = [
   //   {
@@ -189,9 +201,29 @@ const EmployeeListScreen = () => {
   //   },
   // ];
 
-  const handleDelete = (id: number) => {
-    // Implement delete functionality here
-    console.log(`Delete employee with id: ${id}`);
+  const handleDelete = (item: Employee, index: number) => {
+    // Implement delete functionality heres
+    console.log(`Delete employee with id: ${item.id}`);
+    setCurrentIndex(index)
+
+    Alert.alert("Delete!", `Are you sure you want to delete ${item?.employee_name}?`, [
+      {
+        text: "Cancel",
+        onPress: () => {},
+      },
+      {
+        text: "Ok",
+        onPress: () => {
+          //  Toast.show({
+          //    type: "success",
+          //    text2: "You have logged out",
+          //  });
+          deleteEmployee.mutate(item?.id);
+
+          console.log("removed");
+        },
+      },
+    ]);
   };
 
   const handleEdit = (id: number) => {
@@ -203,7 +235,7 @@ const EmployeeListScreen = () => {
 
   // console.log(employeeList.data, "employeeList");
 
-  const renderItem = ({ item }: { item: Employee }) => (
+  const renderItem = ({ item, index }: { item: Employee; index: number }) => (
     <View className="flex-row items-center bg-white p-5 my-2 mx-4 rounded-md">
       <Link href={`/employees/${item.id}`} asChild>
         <TouchableOpacity className="flex-1">
@@ -216,8 +248,12 @@ const EmployeeListScreen = () => {
       <TouchableOpacity onPress={() => handleEdit(item.id)} className="mr-4">
         <Ionicons name="pencil" size={24} color="#4B5563" />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => handleDelete(item.id)}>
-        <Ionicons name="trash" size={24} color="#EF4444" />
+      <TouchableOpacity onPress={() => handleDelete(item, index)}>
+        {deleteEmployee.isPending && currentIndex === index ? (
+          <ActivityIndicator size="small" />
+        ) : (
+          <Ionicons name="trash" size={24} color="#EF4444" />
+        )}
       </TouchableOpacity>
     </View>
   );
