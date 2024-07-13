@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getEmployeeDetails, getEmployeeLists } from ".";
+import { deleteEmployee, getEmployeeDetails, getEmployeeLists } from ".";
 
 export const useEmployeeLists = () => {
   return useQuery({
@@ -16,3 +16,4 @@ export const useEmployeeLists = () => {
      enabled: !!id,
    });
  };
+

@@ -14,7 +14,6 @@ export const getEmployeeLists = async () => {
 
 //Employee details
    export const getEmployeeDetails = async (id: any) => {
-    console.log(id, "api")
      try {
        const res = await axiosInstance.get(`/employee/${id}`);
        return res.data;
@@ -48,6 +47,8 @@ export const getEmployeeLists = async () => {
 
      //update Employee 
    export const deleteEmployee = async (id: any) => {
+    console.log(id, "deleteapi");
+
      try {
        const res = await axiosInstance.delete(`/delete/${id}`);
        return res.data;
