@@ -13,7 +13,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { useEmployeeLists } from "@/api_services/queries";
 import Spinner from "react-native-loading-spinner-overlay";
 import { useDeleteEmployee } from "@/api_services/mutations";
-import Toast from "react-native-toast-message";
+import { AntDesign } from "@expo/vector-icons";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+import EditEmployeeInfo from "../components/AddEmployee";
+import CustomBottomSheet from "../custom_comp/BottomSheet";
+import AddEmployee from "../components/AddEmployee";
 
 interface Employee {
   id: number;
@@ -24,14 +31,17 @@ interface Employee {
 }
 
 const EmployeeListScreen = () => {
-  //usestate
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>();
-  const [currentIndex, setCurrentIndex] = useState<number | null>();
-
   //Api useHook
   const employeeData = useEmployeeLists();
   const deleteEmployee = useDeleteEmployee();
+  //usestate
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>(
+    employeeData?.data?.data
+  );
+  const [currentIndex, setCurrentIndex] = useState<number | null>();
+
+  const SheetRef = React.useRef<null | any>(null);
 
   //
   useEffect(() => {
@@ -69,10 +79,20 @@ const EmployeeListScreen = () => {
   const handleEdit = (id: number) => {
     // Implement edit functionality here
     console.log(`Edit employee with id: ${id}`);
-    // For example, you might navigate to an edit screen:
-    // router.push(`/employees/edit/${id}`);
   };
 
+  const height = hp("50%");
+
+  const CloseSheet = () => {
+    if (SheetRef.current) {
+      SheetRef.current.close();
+    }
+  };
+  const OpenSheet = () => {
+    if (SheetRef.current) {
+      SheetRef.current.open();
+    }
+  };
 
   const renderItem = ({ item, index }: { item: Employee; index: number }) => (
     <View className="flex-row items-center bg-white p-5 my-2 mx-4 rounded-md">
@@ -103,7 +123,7 @@ const EmployeeListScreen = () => {
         // textContent={"Loading..."}
         // textStyle={styles.spinnerTextStyle}
       />
-      <View className="flex-1  bg-gray-100">
+      <View className="flex-1  bg-gray-100 relative">
         <View className="pt-10 pb-4 px-4 bg-white">
           <TextInput
             className="bg-gray-200 px-4 py-2 rounded-md"
@@ -117,7 +137,22 @@ const EmployeeListScreen = () => {
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
         />
+
+        <TouchableOpacity
+          className="w-14 h-14 bg-slate-400 rounded-full items-center justify-center absolute bottom-10 right-5"
+          onPress={() => {
+            OpenSheet();
+          }}
+        >
+          <AntDesign name="plus" size={24} color="black" />
+        </TouchableOpacity>
       </View>
+      <CustomBottomSheet
+        closeOnDragDown={true}
+        height={height}
+        ref={SheetRef}
+        message={<AddEmployee CloseSheet={CloseSheet} />}
+      />
     </>
   );
 };
