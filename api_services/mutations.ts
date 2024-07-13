@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Toast from "react-native-toast-message";
 import { createEmployee, deleteEmployee, updateEmployeeInfo } from ".";
 
-export const useCreateEmployee = () => {
+export const useCreateEmployee = (CloseSheet:any) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: createEmployee,
@@ -13,6 +13,7 @@ export const useCreateEmployee = () => {
         type: "success",
         text2: data.message,
       });
+      CloseSheet()
     },
     onError(error: any) {
       console.log(error);

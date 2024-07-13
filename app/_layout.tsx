@@ -11,7 +11,7 @@ import {
 } from "@tanstack/react-query";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
-import { toastConfig } from '@/custom_comp/CustomToast';
+import { toastConfig } from './custom_comp/CustomToast';
 
 
 
