@@ -14,6 +14,7 @@ export const getEmployeeLists = async () => {
 
 //Employee details
    export const getEmployeeDetails = async (id: any) => {
+    console.log(id,"bbb")
      try {
        const res = await axiosInstance.get(`/employee/${id}`);
        return res.data;

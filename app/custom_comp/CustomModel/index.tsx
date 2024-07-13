@@ -3,11 +3,11 @@ import React, { ReactNode } from "react";
 
 interface Props {
   modelVisible:boolean
-   Children: React.ReactNode 
+   message: React.ReactNode 
    setModelVisible:(modelVisible:boolean)=>void;
 }
 
-const CustomModel = ({ modelVisible, Children, setModelVisible }: Props) => {
+const CustomModel = ({ modelVisible, message, setModelVisible }: Props) => {
   return (
     <Modal
       visible={modelVisible}
@@ -26,7 +26,7 @@ const CustomModel = ({ modelVisible, Children, setModelVisible }: Props) => {
           setModelVisible(!modelVisible);
         }}
       >
-        <Text>{Children}</Text>
+        <Text>{message}</Text>
       </TouchableOpacity>
     </Modal>
   );

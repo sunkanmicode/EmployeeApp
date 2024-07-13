@@ -10,7 +10,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { Link } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { useEmployeeLists } from "@/api_services/queries";
+import { useEmployeeDetails, useEmployeeLists } from "@/api_services/queries";
 import Spinner from "react-native-loading-spinner-overlay";
 import { useDeleteEmployee } from "@/api_services/mutations";
 import { AntDesign } from "@expo/vector-icons";
@@ -18,9 +18,10 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import EditEmployeeInfo from "../components/AddEmployee";
 import CustomBottomSheet from "../custom_comp/BottomSheet";
 import AddEmployee from "../components/AddEmployee";
+import CustomModel from "../custom_comp/CustomModel";
+import EditEmployee from "../components/EditEmployee";
 
 interface Employee {
   id: number;
@@ -40,17 +41,35 @@ const EmployeeListScreen = () => {
     employeeData?.data?.data
   );
   const [currentIndex, setCurrentIndex] = useState<number | null>();
+  const [modelVisible, setModelVisible] = React.useState(false);
+  const [userId, setUserId] = React.useState<number | null>(null);
 
   const SheetRef = React.useRef<null | any>(null);
 
   //
-  useEffect(() => {
-    const lowercasedQuery = searchQuery.toLowerCase();
-    const filtered = employeeData?.data?.data?.filter((employee: any) =>
-      employee.employee_name.toLowerCase().includes(lowercasedQuery)
-    );
-    setFilteredEmployees(filtered);
-  }, [searchQuery]);
+  // useEffect(() => {
+  //   const lowercasedQuery = searchQuery.toLowerCase();
+  //   const filtered = employeeData?.data?.data?.filter((employee: any) =>
+  //     employee.employee_name.toLowerCase().includes(lowercasedQuery)
+  //   );
+  //   setFilteredEmployees(filtered);
+  // }, [searchQuery]);
+
+   const searchItem = employeeData?.data?.data?.filter((employee:any) => {
+     const employeeName =
+       employeeData?.data?.data?.employee_name?.toLowerCase() ?? "";
+     const employeeSalary =
+       employeeData?.data?.data?.employee_salaey?.toLowerCase() ?? "";
+     return (
+       employeeName.includes(searchQuery) ||
+       employeeSalary.includes(searchQuery)
+     );
+   });
+
+  //handleOpen model
+  const openModel = () => {
+    setModelVisible(true);
+  };
 
   const handleDelete = (item: Employee, index: number) => {
     // Implement delete functionality heres
@@ -79,6 +98,8 @@ const EmployeeListScreen = () => {
   const handleEdit = (id: number) => {
     // Implement edit functionality here
     console.log(`Edit employee with id: ${id}`);
+    setUserId(id)
+    openModel()
   };
 
   const height = hp("50%");
@@ -93,6 +114,10 @@ const EmployeeListScreen = () => {
       SheetRef.current.open();
     }
   };
+ const getEmployeeinfo = useEmployeeDetails(userId);
+
+ console.log(userId, "userId");
+ console.log(getEmployeeinfo?.data, "!!!!!!!!");
 
   const renderItem = ({ item, index }: { item: Employee; index: number }) => (
     <View className="flex-row items-center bg-white p-5 my-2 mx-4 rounded-md">
@@ -118,6 +143,16 @@ const EmployeeListScreen = () => {
   );
   return (
     <>
+      <CustomModel
+        modelVisible={modelVisible}
+        setModelVisible={setModelVisible}
+        message={
+          <EditEmployee
+            setModelVisible={setModelVisible}
+            getEmployeeinfo={getEmployeeinfo}
+          />
+        }
+      />
       <Spinner
         visible={employeeData.isPending}
         // textContent={"Loading..."}
@@ -133,7 +168,7 @@ const EmployeeListScreen = () => {
           />
         </View>
         <FlatList
-          data={filteredEmployees}
+          data={searchItem}
           renderItem={renderItem}
           keyExtractor={(item) => item.id.toString()}
         />
