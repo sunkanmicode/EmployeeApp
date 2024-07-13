@@ -62,11 +62,11 @@ export const useUpdateEmployeeInfo = () => {
 };
 
 export const useDeleteEmployee = () => {
-     const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: deleteEmployee,
     onSuccess(data: any) {
-      // console.log(data, "Successresole");
+      console.log(data, "Successresole");
       queryClient.invalidateQueries({ queryKey: ["get-employee-lists"] });
       Toast.show({
         type: "success",
