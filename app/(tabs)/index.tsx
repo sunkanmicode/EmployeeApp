@@ -37,32 +37,25 @@ const EmployeeListScreen = () => {
   const deleteEmployee = useDeleteEmployee();
   //usestate
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>(
-    employeeData?.data?.data
-  );
+  
   const [currentIndex, setCurrentIndex] = useState<number | null>();
   const [modelVisible, setModelVisible] = React.useState(false);
   const [userId, setUserId] = React.useState<number | null>(null);
 
   const SheetRef = React.useRef<null | any>(null);
 
-  //
-  // useEffect(() => {
-  //   const lowercasedQuery = searchQuery.toLowerCase();
-  //   const filtered = employeeData?.data?.data?.filter((employee: any) =>
-  //     employee.employee_name.toLowerCase().includes(lowercasedQuery)
-  //   );
-  //   setFilteredEmployees(filtered);
-  // }, [searchQuery]);
+ 
 
-   const searchItem = employeeData?.data?.data?.filter((employee:any) => {
-     const employeeName =
-       employeeData?.data?.data?.employee_name?.toLowerCase() ?? "";
-     const employeeSalary =
-       employeeData?.data?.data?.employee_salaey?.toLowerCase() ?? "";
+   
+
+   const searchItem = employeeData?.data?.data?.filter((employee: Employee) => {
+     const searchQueryLower = searchQuery.toLowerCase();
+     const employeeName = employee.employee_name.toLowerCase();
+     const employeeSalary = employee.employee_salary.toString().toLowerCase();
+
      return (
-       employeeName.includes(searchQuery) ||
-       employeeSalary.includes(searchQuery)
+       employeeName.includes(searchQueryLower) ||
+       employeeSalary.includes(searchQueryLower)
      );
    });
 
@@ -88,7 +81,6 @@ const EmployeeListScreen = () => {
           onPress: () => {
             deleteEmployee.mutate(item?.id);
 
-            console.log("removed");
           },
         },
       ]
@@ -97,7 +89,7 @@ const EmployeeListScreen = () => {
 
   const handleEdit = (id: number) => {
     // Implement edit functionality here
-    console.log(`Edit employee with id: ${id}`);
+    
     setUserId(id)
     openModel()
   };
@@ -116,8 +108,7 @@ const EmployeeListScreen = () => {
   };
  const getEmployeeinfo = useEmployeeDetails(userId);
 
- console.log(userId, "userId");
- console.log(getEmployeeinfo?.data, "!!!!!!!!");
+
 
   const renderItem = ({ item, index }: { item: Employee; index: number }) => (
     <View className="flex-row items-center bg-white p-5 my-2 mx-4 rounded-md">

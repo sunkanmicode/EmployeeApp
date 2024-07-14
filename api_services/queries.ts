@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { deleteEmployee, getEmployeeDetails, getEmployeeLists } from ".";
+import { getEmployeeDetails, getEmployeeLists } from ".";
 
 export const useEmployeeLists = () => {
   return useQuery({

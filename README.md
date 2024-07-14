@@ -20,6 +20,7 @@ To install the Employee Directory App, follow these steps:
 
 3. Install the dependencies:
 
+
 ## Using Employee Directory App
 
 To use Employee Directory App, follow these steps:
@@ -44,4 +45,4 @@ For more information on why Expo is recommended, visit the [official Expo docume
 
 ## Contact
 
-If you want to contact me, you can reach me at `your-email@example.com`.
+If you want to contact me, you can reach me at `oguntimehins@gmail.com`.
