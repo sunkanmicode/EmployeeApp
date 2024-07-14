@@ -4,13 +4,15 @@ import { AntDesign } from "@expo/vector-icons";
 import CustomInput from '../custom_comp/CustomInput';
 import { Controller, useForm } from 'react-hook-form';
 import { CustomButton } from '../custom_comp/CustomModel/CustomButton';
+import { useUpdateEmployeeInfo } from '@/api_services/mutations';
 
 
 const EditEmployee = ({ setModelVisible, getEmployeeinfo }: any) => {
+
+  
   const { control, handleSubmit, formState, watch, reset } = useForm();
 
   React.useEffect(() => {
-    // fetch data from API and store it in userData
     if (getEmployeeinfo?.data) {
       reset({
         employeeName: getEmployeeinfo?.data?.data.employee_name,
@@ -20,12 +22,21 @@ const EditEmployee = ({ setModelVisible, getEmployeeinfo }: any) => {
     }
   }, [reset, getEmployeeinfo?.data]);
 
-  console.log(getEmployeeinfo?.data?.data?.employee_salary, "kkk");
+
+  const closeModel =()=>{
+    setModelVisible(false)
+  }
+
 
   const onSubmit = (data:any) => {
-    console.log(data, "sub")
+    updateEmployeeData.mutate({
+      id:getEmployeeinfo?.data?.data?.id,
+      name: data?.employeeName,
+      salary: data?.employeeSalary,
+      age: data?.employeeAge,
+    });
   };
-
+const updateEmployeeData = useUpdateEmployeeInfo(closeModel);
   return (
     <View className=" h-auto w-80 p-5 bg-white rounded-lg">
       <View className=" flex-row justify-between my-2">
@@ -107,8 +118,7 @@ const EditEmployee = ({ setModelVisible, getEmployeeinfo }: any) => {
 
           <CustomButton
             primary
-            title="Save"
-            //   title={createEmployee?.isPending ? "Loading..." : "Save"}
+            title={updateEmployeeData?.isPending ? "Loading..." : "Save"}
             onPress={handleSubmit(onSubmit)}
           />
         </ScrollView>

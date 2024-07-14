@@ -7,7 +7,6 @@ export const useCreateEmployee = (CloseSheet:any) => {
   return useMutation({
     mutationFn: createEmployee,
     onSuccess(data: any) {
-      // console.log(data, "Successresole");
       queryClient.invalidateQueries({ queryKey: ["get-employee-lists"] });
       Toast.show({
         type: "success",
@@ -28,22 +27,23 @@ export const useCreateEmployee = (CloseSheet:any) => {
           text2: error?.message,
         });
       }
+      CloseSheet();
+
     },
   });
 };
 
-export const useUpdateEmployeeInfo = () => {
+export const useUpdateEmployeeInfo = (closeModel:()=>void) => {
   const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: updateEmployeeInfo,
     onSuccess(data: any) {
-      // console.log(data, "Successresole");
       queryClient.invalidateQueries({ queryKey: ["get-employee-lists"] });
       Toast.show({
         type: "success",
         text2: data.message,
       });
+      closeModel()
     },
     onError(error: any) {
       console.log(error);
